@@ -7,9 +7,11 @@ const PORT = process.env.PORT || 3000
 router.get('/api', (req, res)=> {
     //res.send('movie api') /* only use to test localhost server */
     res.json({
-        'All Actors': `http://localhost:${PORT}/api/actor`       
+        'All Movies': `http://localhost:${PORT}/api/movie`       
     })    
 })
+
+router.use('/api/movie', require('./api/movieRoutes'))
 
 /* Error handling that is not localhost PORT 3000 */
 router.use((req, res, next)=> {
