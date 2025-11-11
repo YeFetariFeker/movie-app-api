@@ -1,23 +1,62 @@
-const express = require('express')
-const router = express.Router()
-const PORT = process.env.PORT || 3000
+/* routes/router.js – main API router */
+const router = require('express').Router();
+const PORT = process.env.PORT || 3000;
+
+/* ---------- API INDEX ---------- */
+router.get('/api', (req, res) => {
+  res.json({
+    'All Movies': `http://localhost:${PORT}/api/movie`,
+    'All Actors': `http://localhost:${PORT}/api/actor`,
+    'All Directors': `http://localhost:${PORT}/api/director`,
+    'All Genres': `http://localhost:${PORT}/api/genre`,
+    'All Streaming Platforms': `http://localhost:${PORT}/api/streaming_platform`,
+    'All Productions': `http://localhost:${PORT}/api/production`
+  });
+});
+
+/* ---------- DYNAMIC ENDPOINT LOADER ---------- */
+// const endpoints = [
+//   'movie',
+//   'actor',
+//   'director',
+//   'genre',
+//   'streaming_platform', 
+//  ' productionDao'
+// ];
+const endpoints = ['movie','actor','director','genre','production','streaming_platform']
+/* DYNAMIC LOADER */
+endpoints.forEach(endpoint => {
+   
+  // const routePath = `/api/${endpoint}`;
+  // const routeFile = `./api/${endpoint}Routes.js`;  
+  // try {
+  //   router.use(routePath, require(routeFile));
+  // } catch (err) {
+  //   console.error(`Failed to load ${routeFile}:`, err.message);
+  // }
+  router.use(`/api/${endpoint}`, require(`./api/${endpoint}Routes.js`));
+  router.use('/api/genre', require('./api/genreRoutes.js'))  
+
+});
 
 
-/* Root Route=> http://localhost:3000/api (router.get/api will take us to the api) */
-router.get('/api', (req, res)=> {
-    //res.send('movie api') /* only use to test localhost server */
-    res.json({
-        'All Movies': `http://localhost:${PORT}/api/movie`       
-    })    
-})
+/* ---------- 404 HANDLER (JSON, not HTML) ---------- */
+router.use((req, res) => {
+  res.status(404).json({
+    error: 'Not Found',
+    path: req.originalUrl,
+    message: 'This endpoint does not exist. Check /api for available routes.'
+  });
+});
 
-router.use('/api/movie', require('./api/movieRoutes'))
-
-/* Error handling that is not localhost PORT 3000 */
-router.use((req, res, next)=> {
-    res.status(404)
-    .send('<h1>404 Error This page does not exist</h1>')
-})
+module.exports = router;
 
 
-module.exports = router
+
+
+
+
+
+
+
+

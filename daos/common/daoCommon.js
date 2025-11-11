@@ -1,64 +1,49 @@
-/* daoCommon.js, base helper for db access, such as select all or findById */
-const connect = require('../../config/dbconfig')
+/* daos/common/daoCommon.js */
+const db = require('../../config/dbconfig')               // ← use `db` (consistent with other DAOs)
 const { queryAction } = require('../../helpers/queryAction')
 
 const daoCommon = {
 
-    /* create methods that will query the database */
-    findAll: (req, res, table)=> {
+  /* ---------- FIND ALL ---------- */
+  findAll: (res, table) => {
+    const sql = `SELECT * FROM ${table}`;
+    db.query(sql, (err, rows) => queryAction(res, err, rows, table));
+  },
 
-        /* .query makes an arg(sql query, callback func) */
-        connect.query(
-             `SELECT * FROM ${table};`,  /*sql query */
-            (error,  rows)=> {   /*callback func */
-                queryAction(res, error, rows, table)
-                // if (!error) {
-                //     if (rows.length === 1) {
-                //         res.json(...rows)
-                //     } else {
-                //         res.json(rows)
-                //     }
-                // } else {
-                //     console.log(`Dao Error: ${error}`)
-                //     res.json({
-                //         "message": 'error',
-                //         'table': `${table}`,
-                //         'error': error
-                //     })
-                // }
-            }
-        )           
-    },
+  /* ---------- FIND BY ID (SQL-Injection safe) ---------- */
+  findById: (res, table, id) => {
+    const sql = `SELECT * FROM ${table} WHERE ${table}_id = ?`;   // ← ? placeholder
+    db.query(sql, [id], (err, rows) => {
+      if (err) return queryAction(res, err, [], table);
+      if (rows.length === 0) {
+        return res.status(404).json({ error: `${table} not found` });
+      }
+      res.json(rows[0]);   // single object, not array
+    });
+  },
 
-    findById: (res, table, id) => {
+  /* ---------- SORT (whitelist columns to prevent injection) ---------- */
+  sort: (res, table, sorter) => {
+    // Whitelist allowed columns per table (add more as needed)
+    const allowed = {
+      movie: ['title', 'yr_released', 'rating', 'gross'],
+      actor: ['fName', 'lName'],
+      director: ['fName', 'lName'],
+      genre: ['genre_name'],
+      streaming_platform: ['platform_name'],
+      // ... add others
+    };
 
-        connect.query(
-            `SELECT * FROM ${table} WHERE ${table}_id = ${id};`,
-            (error, rows)=> {
-                if (!error) {
-                    res.json(...rows)
-                } else {
-                    console.log(`DAO Error: ${error}`)
-                    res.json({
-                        "message": 'error',
-                        'table': `${table}`,
-                        'error': error
-                    })
-                }
-            }
-        )
-    },
-
-    sort: (res, table, sorter)=> {
-
-        connect.query(
-            `SELECT * FROM ${table} ORDER BY ${sorter};`,
-
-            (error, rows)=> {
-               queryAction(res, error, rows, table)
-            }
-        )
+    const safeCols = allowed[table] || [];
+    if (!safeCols.includes(sorter)) {
+      return res.status(400).json({ error: 'Invalid sort field' });
     }
-}
 
-module.exports = daoCommon
+    const sql = `SELECT * FROM ${table} ORDER BY ${sorter}`;
+    db.query(sql, (err, rows) => queryAction(res, err, rows, table));
+  }
+};
+
+module.exports = daoCommon;
+
+

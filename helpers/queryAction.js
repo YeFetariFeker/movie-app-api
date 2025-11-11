@@ -1,21 +1,23 @@
-const queryAction =(obj, e, r, t)=> {   /**e= error, r= rows, t= table */
+/* helpers/queryAction.js */
+const queryAction = (res, err, rows, table) => {
+  if (err) {
+    console.error(`DAO Error [${table}]:`, err);
+    return res.status(500).json({
+      message: 'Database error',
+      table,
+      error: err.message || String(err)   // ← fixed: `error` → `err`
+    });
+  }
 
-    if (!e) {
-        if (r.length === 1) {
-            obj.json(...r)
-        } else {
-            obj.json(r)
-        }
-    } else {
-        console.log(`DAO Error: ${e}`)
-        obj.json({
-            "message": 'error',
-            'table': `${t}`,
-            'error': error
-        })
-    }
-}
+  // Single row → return object, not array
+  if (rows.length === 1) {
+    return res.json(rows[0]);
+  }
 
-module.exports = {
-    queryAction
-}
+  // Empty result → still return array (front-end can handle [])
+  res.json(rows);
+};
+
+module.exports = { 
+  queryAction 
+};
