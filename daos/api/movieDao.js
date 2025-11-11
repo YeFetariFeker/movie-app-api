@@ -89,6 +89,7 @@ const movieDao = {
       ORDER BY m.movie_id;
     `;
 
+    /* Run the SQL query. When it's done, send the results to the user — or show an error if something went wrong. */
     db.query(sql, (error, rows) => {
       queryAction(res, error, rows, table);
     });
