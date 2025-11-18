@@ -35,7 +35,9 @@ endpoints.forEach(endpoint => {
   //   console.error(`Failed to load ${routeFile}:`, err.message);
   // }
   router.use(`/api/${endpoint}`, require(`./api/${endpoint}Routes.js`));
-  router.use('/api/genre', require('./api/genreRoutes.js'))  
+
+  /*commented/ main router loads genreRoutes twice */
+  //router.use('/api/genre', require('./api/genreRoutes.js'))  
 
 });
 

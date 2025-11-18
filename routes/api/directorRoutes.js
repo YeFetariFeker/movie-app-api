@@ -14,6 +14,11 @@ router.get('/:id', (req, res) => {
   dao.findById(res, dao.table, id);
 });
 
+// router.get('/:id', (req, res) => {
+//   const id = parseInt(req.params.id, 10);
+//   dao.findById(res, id);
+// });
+
 /* GET /api/director/:id/movies → movies directed by this director */
 router.get('/:id/movies', (req, res) => {
   const id = parseInt(req.params.id, 10);
@@ -27,6 +32,9 @@ router.get('/sort/:sorter', (req, res) => {
   // `dao.sort` already whitelists columns in daoCommon.js
   dao.sort(res, dao.table, sorter);
 });
+// router.get('/sort/:sorter', (req, res) => {
+//   dao.sort(res, req.params.sorter);
+// });
 
 /* POST /api/director → create new director */
 router.post('/', (req, res) => {

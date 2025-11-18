@@ -4,23 +4,34 @@ const { genreDao: dao } = require('../../daos/dao');
 
 /* GET /api/genre → all genres */
 router.get('/', (req, res) => {
-  dao.findAll(res);
+  dao.findAll(res, dao.table);
 });
+
+/* Sorter */
+router.get('/sort/:sorter', (req, res)=> {
+  const sorter = req.params.sorter
+  dao.sort(res, dao.table, sorter)
+})
 
 /* GET /api/genre/:id → one genre by ID */
-router.get('/:id', (req, res) => {
-  const id = parseInt(req.params.id, 10);
-  if (isNaN(id)) {
-    return res.status(400).json({ error: 'Invalid genre ID' });
-  }
-  dao.findById(id, res);
-});
+// router.get('/:id', (req, res) => {
+//   const id = parseInt(req.params.id, 10);
+//   if (isNaN(id)) {
+//     return res.status(400).json({ error: 'Invalid genre ID' });
+//   }
+//   dao.findById(id, res);
+// });
+
+// http://localhost:3000/api/:id
+router.get('/:id', (req, res)=> {
+    dao.findById(res, dao.table, req.params.id)
+})
 
 /* POST /api/genre → create new genre */
-router.post('/', (req, res) => {
-  const { genre_name } = req.body;
-  if (!genre_name || typeof genre_name !== 'string') {
-    return res.status(400).json({ error: 'genre_name is required and must be a string' });
+router.post('/create', (req, res) => {
+  const { genre } = req.body;
+  if (!genre || typeof genre !== 'string') {
+    return res.status(400).json({ error: 'genre is required and must be a string' });
   }
   dao.create(req, res);
 });

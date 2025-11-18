@@ -4,7 +4,7 @@ const { actorDao: dao } = require('../../daos/dao');
 
 /* GET /api/actor → all actors */
 router.get('/', (req, res) => {
-  dao.findAll(res);
+  dao.findAll(res, dao.table);
 });
 
 /* GET /api/actor/:id → single actor */
@@ -21,8 +21,18 @@ router.get('/:id/movies', (req, res) => {
   dao.findMoviesByActor(res, dao.table, id);
 });
 
+/* GET /api/actor/sort/:sort */
+router.get('/sort/:sorter', (req, res)=> {
+  const sorter = req.params.sorter;
+  const allowedSorts = ['id', 'first_name', 'last_name'];
+  if (!allowedSorts.includes(sorter)) {
+    return res.status(400).json({ error: 'Invalid sort field'});
+  }
+  dao.sort(res, dao.table, sorter)
+})
+
 /* POST /api/actor → create new actor */
-router.post('/', (req, res) => {
+router.get('/', (req, res) => {
   const { first_name, last_name, img_url } = req.body;
 
   if (!first_name || !last_name) {

@@ -1,42 +1,40 @@
-
-
-
+### Get all movie
 #GET  http://localhost:3000/api/movie
 
-#Geet single movie
+### Get single movie/sort
 #GET  http://localhost:3000/api/movie/4
 
-#Get single actor
+###Get single actor
 #GET http://localhost:3000/api/actor/2
 
-# GET see all endpoint
+### GET see all endpoint
 #GET http://localhost:3000/api
 
-# GET all movie 
+### GET all movie 
 #GET http://localhost:3000/api/movie
 
 
-# GET by year released
+### GET by year released
 #GET http://localhost:3000/api/movie/sort/yr_released
 
 
-# GET single actor by ID
+### GET single actor by ID
 #GET http://localhost:3000/api/actor/5
 
-# GET movie by actor/5
+### GET movie by actor/5
 #GET http://localhost:3000/api/actor/5/movies
 
-# GET actor sorted
+### GET actor sorted
 #GET http://localhost:3000/api/actor/sort/lName
 
-#GET all director
+###GET all director
 #GET http://localhost:3000/api/director
 
-# GET a single directer by ID
+### GET a single directer by ID
 #GET http://localhost:3000/api/director
 
-# GET single director by ID
-#GET http://localhost:3000/api/director/3
+### GET single director by ID
+GET http://localhost:3000/api/director/3
 
-# GET movies ORDER BY 
-#GET http://localhost:3000/api/movie/4
+### GET movies ORDER BY 
+GET http://localhost:3000/api/movie

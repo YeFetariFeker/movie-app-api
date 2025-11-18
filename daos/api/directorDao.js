@@ -1,7 +1,8 @@
-// daos/api/directorDao.js
+/*---- daos/api/directorDao.js ---*/
 const db = require('../../config/dbconfig')   /* Imorts MySQL db connection pool from config file and allow SQL queries to run */
 const { queryAction } = require('../../helpers/queryAction')  /* Imports a shared helper function standardize all API res, including success JSON and error 500 with error message* */
 
+//const daoCommon = require('../daoCommon'); /* FIXED PATH */
 
 /*Creates the Director DAO object and tells it "You are in charge of the director table." */
 const directorDao = {

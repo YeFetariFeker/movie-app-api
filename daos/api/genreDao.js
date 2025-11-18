@@ -5,42 +5,16 @@ const { queryAction } = require('../../helpers/queryAction')
 const genreDao = {
   table: 'genre',
 
-  // GET /api/genre → all genres
-  findAll: (res) => {
-    const sql = `SELECT * FROM genre ORDER BY genre_name`;
-    db.query(sql, (err, results) => {
-      if (err) {
-        console.error('Error fetching genres:', err);
-        return res.status(500).json({ error: 'Failed to fetch genres' });
-      }
-      res.json(results);
-    });
-  },
-
-  // GET /api/genre/:id → one genre
-  findById: (id, res) => {  // ← fixed: findById
-    const sql = `SELECT * FROM genre WHERE genre_id = ?`;
-    db.query(sql, [id], (err, results) => {
-      if (err) {
-        console.error('Error fetching genre:', err);  // ← fixed syntax
-        return res.status(500).json({ error: 'Failed to fetch genre' });
-      }
-      if (results.length === 0) {  // ← fixed: length
-        return res.status(404).json({ message: 'Genre not found' });
-      }
-      res.json(results[0]);
-    });
-  },
-
-  // POST /api/genre → create new
+  
+  // POST /api/genre → create new *** move to daoCommon***
   create: (req, res) => {
-    const { genre_name } = req.body;
-    if (!genre_name) {
-      return res.status(400).json({ error: 'genre_name is required' });
+    const { genre } = req.body;
+    if (!genre) {
+      return res.status(400).json({ error: 'genre is required' });
     }
 
-    const sql = `INSERT INTO genre (genre_name) VALUES (?)`;
-    db.query(sql, [genre_name], (err, results) => {
+    const sql = `INSERT INTO genre (genre) VALUES (?)`;
+    db.query(sql, [genre], (err, results) => {
       if (err) {
         console.error('Error creating genre:', err);
         return res.status(500).json({ error: 'Failed to create genre' });

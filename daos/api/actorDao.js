@@ -60,6 +60,22 @@ const actorDao = {  /* creates Actor DAO object and tells it (you are responsble
         actor_id: result.insertId
       });
     });
+  },
+
+  /*SORTING */
+  sort: (res, table, sorter)=> {
+    const allowed = ['actor_id', 'first_name', 'last_name'];
+
+    if (!allowed.includes(sorter)) {
+      return res.status(400).json({ error: 'Invlaid sort field'});
+    }
+
+    const safeTable = db.escapeId(table);
+    const safeSorter = db.escapeId(sorter);
+
+    const sql = `SELECT * FROM ${safeTable} ORDER BY ${safeSorter}`;
+
+    db.query(sql, (err, rows)=> queryAction(res, err, rows, table));
   }
 
 
